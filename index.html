@@ -1,80 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Meal Schedule Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
+<script>
+  const mealNames = [
+    "Breakfast",
+    "Mid-Morning Snack",
+    "Lunch",
+    "Mid-Afternoon Snack",
+    "Pre-Workout Snack",
+    "Post-Workout Snack",
+    "Dinner",
+    "Bedtime Snack"
+  ];
+
+  const intervals = [60, 150, 120, 150, 120, 90, 90, 120]; // in minutes
+
+  function generateSchedule() {
+    const wakeTime = document.getElementById("wakeTime").value;
+    if (!wakeTime) {
+      alert("Please enter your wake-up time.");
+      return;
     }
-    h2 {
-      text-align: center;
+
+    // Debug log
+    console.log("Wake-up time input:", wakeTime); // e.g. "13:30"
+
+    const [hour, minute] = wakeTime.split(":").map(Number);
+    let current = new Date();
+    current.setHours(hour, minute, 0, 0); // Set to wake time
+
+    const scheduleList = document.getElementById("schedule");
+    scheduleList.innerHTML = "";
+
+    for (let i = 0; i < mealNames.length; i++) {
+      current = new Date(current.getTime() + intervals[i] * 60000); // Add interval
+      const timeStr = current.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      const li = document.createElement("li");
+      li.textContent = `${mealNames[i]} – ${timeStr}`;
+      scheduleList.appendChild(li);
     }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px 0;
-    }
-    ul {
-      padding-left: 0;
-      list-style: none;
-    }
-    li {
-      background: #f0f0f0;
-      margin: 6px 0;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-  <h2>Meal Schedule Generator</h2>
-  <label>Enter Wake-Up Time:</label>
-  <input type="time" id="wakeTime" />
-  <button onclick="generateSchedule()">Generate</button>
-
-  <ul id="schedule"></ul>
-
-  <script>
-    const mealNames = [
-      "Breakfast",
-      "Mid-Morning Snack",
-      "Lunch",
-      "Mid-Afternoon Snack",
-      "Pre-Workout Snack",
-      "Post-Workout Snack",
-      "Dinner",
-      "Bedtime Snack"
-    ];
-
-    const intervals = [60, 150, 120, 150, 120, 90, 90, 120]; // in minutes
-
-    function generateSchedule() {
-      const wakeTime = document.getElementById("wakeTime").value;
-      if (!wakeTime) {
-        alert("Please enter your wake-up time.");
-        return;
-      }
-
-      const [hour, minute] = wakeTime.split(":").map(Number);
-      let current = new Date();
-      current.setHours(hour, minute, 0, 0);
-
-      const scheduleList = document.getElementById("schedule");
-      scheduleList.innerHTML = "";
-
-      for (let i = 0; i < mealNames.length; i++) {
-        current = new Date(current.getTime() + intervals[i] * 60000);
-        const timeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const li = document.createElement("li");
-        li.textContent = `${mealNames[i]} – ${timeStr}`;
-        scheduleList.appendChild(li);
-      }
-    }
-  </script>
-</body>
-</html>
+  }
+</script>
